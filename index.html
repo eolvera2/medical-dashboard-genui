@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Dashboard GenUI - Fluent 2 Design</title>
+    
+    <!-- Fluent UI 2 Web Components -->
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@fluentui/web-components/dist/index.css">
+    
+    <!-- Sortable.js for drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header with GenUI Controls -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="genui-controls">
+                <fluent-text-field 
+                    id="genui-prompt" 
+                    placeholder="Generate or modify dashboard (e.g., 'Add cardiac risk assessment')"
+                    size="large">
+                    <span slot="start">🤖</span>
+                </fluent-text-field>
+                <fluent-button id="generate-btn" appearance="accent">
+                    Generate
+                </fluent-button>
+            </div>
+            <div class="user-controls">
+                <button id="notifications-btn">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </button>
+                <button id="customize-btn">⚙️</button>
+                <div class="user-profile">
+                    <div class="user-avatar">DS</div>
+                    <div class="user-info">
+                        <div class="user-name">Dr. Sarah Mitchell</div>
+                        <div class="user-role">Cardiologist</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <main class="dashboard-container">
+        
+        <!-- LEFT PANEL: Patient Info & Draggable Modules -->
+        <aside class="left-panel">
+            <!-- Patient Information Card -->
+            <div class="patient-card">
+                <div class="patient-header-section">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <div class="patient-name">John Doe</div>
+                        <div class="patient-meta">
+                            <span class="meta-item">MRN: 123456</span>
+                            <span class="meta-separator">•</span>
+                            <span class="meta-item">65 yo Male</span>
+                        </div>
+                        <div class="patient-tags">
+                            <span class="status-badge status-urgent">Urgent</span>
+                            <span class="status-badge status-room">Room 302</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chief Complaint -->
+                <div class="complaint-section">
+                    <div class="complaint-label">⚠️ CHIEF COMPLAINT</div>
+                    <div class="complaint-text">Chest pain, shortness of breath × 2 days</div>
+                    <div class="complaint-severity">
+                        <span class="severity-label">Pain Scale:</span>
+                        <div class="severity-indicator">
+                            <div class="severity-fill" style="width: 70%"></div>
+                        </div>
+                        <span class="severity-value">7/10</span>
+                    </div>
+                </div>
+                
+                <!-- Last Visit Summary -->
+                <div class="visit-summary">
+                    <div class="summary-label">📅 LAST VISIT</div>
+                    <div class="summary-date">October 15, 2024</div>
+                    <div class="summary-text">Follow-up for hypertension. BP controlled on current medications.</div>
+                </div>
+            </div>
+            
+            <!-- Draggable Modules -->
+            <div class="modules-section">
+                <div class="section-header">🎯 AVAILABLE MODULES</div>
+                
+                <div id="available-modules" class="module-grid">
+                    <!-- Timeline Module -->
+                    <div class="module-card" data-module="timeline">
+                        <div class="module-icon timeline">📅</div>
+                        <div class="module-content">
+                            <div class="module-title">Patient Timeline</div>
+                            <div class="module-description">Medical history & events</div>
+                        </div>
+                        <div class="module-drag-handle">⋮⋮</div>
+                    </div>
+                    
+                    <!-- Abnormalities Module -->
+                    <div class="module-card" data-module="abnormalities">
+                        <div class="module-icon abnormal">⚠️</div>
+                        <div class="module-content">
+                            <div class="module-title">Key Abnormalities</div>
+                            <div class="module-description">Lab values & vital alerts</div>
+                        </div>
+                        <div class="module-drag-handle">⋮⋮</div>
+                    </div>
+                    
+                    <!-- SOAP Module -->
+                    <div class="module-card" data-module="soap">
+                        <div class="module-icon soap">📝</div>
+                        <div class="module-content">
+                            <div class="module-title">SOAP Summary</div>
+                            <div class="module-description">Clinical documentation</div>
+                        </div>
+                        <div class="module-drag-handle">⋮⋮</div>
+                    </div>
+                    
+                    <!-- Body Map Module -->
+                    <div class="module-card" data-module="bodymap">
+                        <div class="module-icon bodymap">🧍</div>
+                        <div class="module-content">
+                            <div class="module-title">Body Map</div>
+                            <div class="module-description">Anatomical visualization</div>
+                        </div>
+                        <div class="module-drag-handle">⋮⋮</div>
+                    </div>
+                    
+                    <!-- H&P Module -->
+                    <div class="module-card" data-module="hp">
+                        <div class="module-icon hp">🩺</div>
+                        <div class="module-content">
+                            <div class="module-title">H&P Summary</div>
+                            <div class="module-description">History & Physical</div>
+                        </div>
+                        <div class="module-drag-handle">⋮⋮</div>
+                    </div>
+                    
+                    <!-- Labs Module -->
+                    <div class="module-card" data-module="labs">
+                        <div class="module-icon labs">🧪</div>
+                        <div class="module-content">
+                            <div class="module-title">Lab Results</div>
+                            <div class="module-description">Recent test results</div>
+                        </div>
+                        <div class="module-drag-handle">⋮⋮</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- CENTER PANEL: Workspace -->
+        <section class="center-panel">
+            <div class="workspace-header">
+                <div>
+                    <h1 class="workspace-title">Clinical Workspace</h1>
+                    <p class="workspace-subtitle">Last updated: 2 minutes ago</p>
+                </div>
+                <button class="action-button" id="workspace-customize">
+                    ⚙️ Customize View
+                </button>
+            </div>
+            
+            <div id="workspace" class="workspace-grid">
+                <!-- Chief Complaint Analysis -->
+                <div class="workspace-card priority-high">
+                    <div class="card-header">
+                        <h3 class="card-title">Chief Complaint Analysis</h3>
+                        <button class="card-action">Details →</button>
+                    </div>
+                    <div class="complaint-tags">
+                        <span class="tag tag-critical">Chest Pain</span>
+                        <span class="tag tag-warning">SOB</span>
+                        <span class="tag tag-info">2 Days</span>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric-item">
+                            <div class="metric-label">Onset</div>
+                            <div class="metric-value">48 hours ago</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Character</div>
+                            <div class="metric-value">Pressure-like</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Radiation</div>
+                            <div class="metric-value">Left arm</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Exertion</div>
+                            <div class="metric-value">Worsens</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vital Signs -->
+                <div class="workspace-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Current Vital Signs</h3>
+                        <button class="card-action">Trends →</button>
+                    </div>
+                    <div class="vitals-grid">
+                        <div class="vital-item">
+                            <div class="vital-icon bp">💓</div>
+                            <div class="vital-content">
+                                <div class="vital-label">Blood Pressure</div>
+                                <div class="vital-value">142/88 <span class="trend trend-up">↑</span></div>
+                                <div class="vital-status warning">Elevated</div>
+                            </div>
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-icon hr">❤️</div>
+                            <div class="vital-content">
+                                <div class="vital-label">Heart Rate</div>
+                                <div class="vital-value">92 <span class="trend trend-stable">→</span></div>
+                                <div class="vital-status normal">Normal</div>
+                            </div>
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-icon temp">🌡️</div>
+                            <div class="vital-content">
+                                <div class="vital-label">Temperature</div>
+                                <div class="vital-value">98.6°F <span class="trend trend-stable">→</span></div>
+                                <div class="vital-status normal">Normal</div>
+                            </div>
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-icon o2">💨</div>
+                            <div class="vital-content">
+                                <div class="vital-label">O2 Saturation</div>
+                                <div class="vital-value">96% <span class="trend trend-down">↓</span></div>
+                                <div class="vital-status warning">Low Normal</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chronic Conditions -->
+                <div class="workspace-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Chronic Conditions & Risk Factors</h3>
+                        <button class="card-action">Manage →</button>
+                    </div>
+                    <div class="conditions-list">
+                        <div class="condition-item">
+                            <div class="condition-indicator critical"></div>
+                            <div class="condition-info">
+                                <div class="condition-name">Hypertension</div>
+                                <div class="condition-details">Stage 2 - Suboptimal control</div>
+                            </div>
+                            <span class="condition-duration">5 years</span>
+                        </div>
+                        <div class="condition-item">
+                            <div class="condition-indicator warning"></div>
+                            <div class="condition-info">
+                                <div class="condition-name">Type 2 Diabetes</div>
+                                <div class="condition-details">A1C: 7.2% - Above target</div>
+                            </div>
+                            <span class="condition-duration">3 years</span>
+                        </div>
+                        <div class="condition-item">
+                            <div class="condition-indicator controlled"></div>
+                            <div class="condition-info">
+                                <div class="condition-name">Hyperlipidemia</div>
+                                <div class="condition-details">LDL: 95 mg/dL - Controlled</div>
+                            </div>
+                            <span class="condition-duration">4 years</span>
+                        </div>
+                        <div class="condition-item">
+                            <div class="condition-indicator info"></div>
+                            <div class="condition-info">
+                                <div class="condition-name">Former Smoker</div>
+                                <div class="condition-details">Quit 2 years ago</div>
+                            </div>
+                            <span class="condition-duration">20 pack-years</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Clinical Guidelines -->
+                <div class="workspace-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Relevant Clinical Guidelines</h3>
+                        <button class="card-action">View All →</button>
+                    </div>
+                    <div class="guidelines-container">
+                        <div class="guideline-item active">
+                            <div class="guideline-icon">📋</div>
+                            <div class="guideline-content">
+                                <div class="guideline-title">ACC/AHA Chest Pain Guidelines</div>
+                                <ul class="guideline-points">
+                                    <li>Obtain ECG within 10 minutes</li>
+                                    <li>Serial troponins at 0 and 3 hours</li>
+                                    <li>Calculate HEART score for risk stratification</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="guideline-item">
+                            <div class="guideline-icon">💊</div>
+                            <div class="guideline-content">
+                                <div class="guideline-title">Diabetes Management</div>
+                                <ul class="guideline-points">
+                                    <li>Target A1C < 7% for most adults</li>
+                                    <li>Monitor for cardiovascular complications</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Differential Diagnosis -->
+                <div class="workspace-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Differential Diagnosis</h3>
+                        <button class="card-action">Add Diagnosis →</button>
+                    </div>
+                    <div class="diagnosis-table">
+                        <div class="diagnosis-row">
+                            <div class="diagnosis-priority">
+                                <span class="priority-badge priority-high">HIGH</span>
+                            </div>
+                            <div class="diagnosis-name">Acute Coronary Syndrome</div>
+                            <div class="diagnosis-probability">
+                                <div class="probability-bar">
+                                    <div class="probability-fill high" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <button class="diagnosis-action">→</button>
+                        </div>
+                        <div class="diagnosis-row">
+                            <div class="diagnosis-priority">
+                                <span class="priority-badge priority-medium">MEDIUM</span>
+                            </div>
+                            <div class="diagnosis-name">Pulmonary Embolism</div>
+                            <div class="diagnosis-probability">
+                                <div class="probability-bar">
+                                    <div class="probability-fill medium" style="width: 40%"></div>
+                                </div>
+                            </div>
+                            <button class="diagnosis-action">→</button>
+                        </div>
+                        <div class="diagnosis-row">
+                            <div class="diagnosis-priority">
+                                <span class="priority-badge priority-low">LOW</span>
+                            </div>
+                            <div class="diagnosis-name">GERD/Esophageal Spasm</div>
+                            <div class="diagnosis-probability">
+                                <div class="probability-bar">
+                                    <div class="probability-fill low" style="width: 20%"></div>
+                                </div>
+                            </div>
+                            <button class="diagnosis-action">→</button>
+                        </div>
+                        <div class="diagnosis-row">
+                            <div class="diagnosis-priority">
+                                <span class="priority-badge priority-low">LOW</span>
+                            </div>
+                            <div class="diagnosis-name">Musculoskeletal Pain</div>
+                            <div class="diagnosis-probability">
+                                <div class="probability-bar">
+                                    <div class="probability-fill low" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            <button class="diagnosis-action">→</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topics to Address -->
+                <div class="workspace-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Topics to Address</h3>
+                        <button class="card-action">Add Topic →</button>
+                    </div>
+                    <div class="topics-list">
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic1" checked>
+                            <label for="topic1">Cardiac risk assessment and workup</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic2" checked>
+                            <label for="topic2">Medication reconciliation and optimization</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic3">
+                            <label for="topic3">Smoking cessation reinforcement</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic4">
+                            <label for="topic4">Exercise tolerance evaluation</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic5">
+                            <label for="topic5">Diabetic management review</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Drop Zone -->
+                <div id="workspace-dropzone" class="dropzone">
+                    <div class="dropzone-content">
+                        <span class="dropzone-icon">➕</span>
+                        <span class="dropzone-text">Drop modules here to add to workspace</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- RIGHT PANEL: Checklist & Actions -->
+        <aside class="right-panel">
+            <!-- Progress Overview -->
+            <div class="checklist-header">
+                <h2 class="checklist-title">Clinical Checklist</h2>
+                <div class="checklist-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 35%"></div>
+                    </div>
+                    <span class="progress-text">7 of 20 completed</span>
+                </div>
+            </div>
+            
+            <!-- Missing Data Section -->
+            <div class="checklist-section">
+                <div class="checklist-section-header">
+                    <div class="section-icon data">📊</div>
+                    <div class="section-title">Missing Data</div>
+                    <span class="section-count">4</span>
+                </div>
+                <div class="checklist-items">
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="data1"></div>
+                        <label class="checklist-label">Current troponin level</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="data2"></div>
+                        <label class="checklist-label">ECG interpretation</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="data3"></div>
+                        <label class="checklist-label">Chest X-ray results</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="data4"></div>
+                        <label class="checklist-label">BNP/NT-proBNP levels</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Questions to Ask -->
+            <div class="checklist-section">
+                <div class="checklist-section-header">
+                    <div class="section-icon questions">💬</div>
+                    <div class="section-title">Questions to Ask</div>
+                    <span class="section-count">6</span>
+                </div>
+                <div class="checklist-items">
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="q1"></div>
+                        <label class="checklist-label">Character of chest pain?</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="q2"></div>
+                        <label class="checklist-label">Exertional component?</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="q3"></div>
+                        <label class="checklist-label">Associated symptoms?</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="q4"></div>
+                        <label class="checklist-label">Recent weight changes?</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="q5"></div>
+                        <label class="checklist-label">Medication compliance?</label>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-item="q6"></div>
+                        <label class="checklist-label">Family history updates?</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Items -->
+            <div class="checklist-section">
+                <div class="checklist-section-header">
+                    <div class="section-icon actions">⚡</div>
+                    <div class="section-title">Action Items</div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-button primary">
+                        <span>🧪</span>
+                        Order Labs
+                    </button>
+                    <button class="action-button">
+                        <span>❤️</span>
+                        Consult Cardiology
+                    </button>
+                    <button class="action-button">
+                        <span>📝</span>
+                        Update Problem List
+                    </button>
+                    <button class="action-button">
+                        <span>💊</span>
+                        Review Medications
+                    </button>
+                </div>
+            </div>
+            
+            <!-- AI Suggestions -->
+            <div class="suggestions-section">
+                <div class="suggestions-header">
+                    <h3 class="suggestions-title">AI Recommendations</h3>
+                    <span class="ai-badge">Powered by GenUI</span>
+                </div>
+                <div class="suggestion-items">
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon recommend">💡</div>
+                        <div class="suggestion-content">
+                            <div class="suggestion-title">Calculate HEART Score</div>
+                            <div class="suggestion-text">Recommended for chest pain risk stratification</div>
+                        </div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon alert">⚠️</div>
+                        <div class="suggestion-content">
+                            <div class="suggestion-title">Diabetic Eye Exam Due</div>
+                            <div class="suggestion-text">Patient overdue by 3 months</div>
+                        </div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon info">ℹ️</div>
+                        <div class="suggestion-content">
+                            <div class="suggestion-title">Consider Statin Adjustment</div>
+                            <div class="suggestion-text">Based on recent LDL levels and cardiac risk</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Generating dashboard...</p>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
