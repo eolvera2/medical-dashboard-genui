@@ -942,3 +942,310 @@ document.head.appendChild(styleSheet);
 
 // Log successful initialization
 console.log('Medical Dashboard GenUI - All components initialized successfully');
+
+// ===================================
+// VIEW MODE SWITCHING FUNCTIONALITY
+// ===================================
+
+let currentViewMode = 'pre-visit';
+let isTransitioning = false;
+
+function initializeViewModeSwitcher() {
+    const viewModeDropdown = document.getElementById('view-mode-dropdown');
+    const dashboardContainer = document.querySelector('.dashboard-container');
+    const dashboardHeader = document.querySelector('.dashboard-header');
+    const leftPanel = document.querySelector('.left-panel');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    
+    if (viewModeDropdown) {
+        viewModeDropdown.addEventListener('change', function(e) {
+            const newMode = e.target.value;
+            switchViewMode(newMode);
+        });
+    }
+    
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            toggleLeftPanel();
+        });
+    }
+    
+    // Initialize card expand buttons
+    initializeCardExpanders();
+}
+
+function switchViewMode(newMode) {
+    if (isTransitioning || newMode === currentViewMode) return;
+    
+    isTransitioning = true;
+    const dashboardContainer = document.querySelector('.dashboard-container');
+    const body = document.body;
+    
+    // Add transitioning class
+    dashboardContainer.classList.add('transitioning');
+    
+    // Fade out content
+    setTimeout(() => {
+        // Switch modes
+        if (newMode === 'visit') {
+            dashboardContainer.classList.add('visit-mode');
+            body.classList.add('visit-mode');
+            currentViewMode = 'visit';
+        } else {
+            dashboardContainer.classList.remove('visit-mode');
+            body.classList.remove('visit-mode');
+            currentViewMode = 'pre-visit';
+            
+            // Reset left panel expansion if returning to pre-visit
+            const leftPanel = document.querySelector('.left-panel');
+            if (leftPanel) {
+                leftPanel.classList.remove('expanded');
+            }
+        }
+        
+        // Remove transitioning, add transition-complete
+        dashboardContainer.classList.remove('transitioning');
+        dashboardContainer.classList.add('transition-complete');
+        
+        // Fade in content
+        setTimeout(() => {
+            dashboardContainer.classList.remove('transition-complete');
+            isTransitioning = false;
+            
+            // Show notification
+            const modeName = newMode === 'visit' ? 'Visit Mode' : 'Pre-Visit Mode';
+            showNotification(`Switched to ${modeName}`, 'success');
+        }, 300);
+    }, 200);
+}
+
+function toggleLeftPanel() {
+    const leftPanel = document.querySelector('.left-panel');
+    const dashboardContainer = document.querySelector('.dashboard-container');
+    
+    if (!leftPanel || currentViewMode !== 'visit') return;
+    
+    if (leftPanel.classList.contains('expanded')) {
+        // Collapse
+        leftPanel.classList.remove('expanded');
+        dashboardContainer.style.gridTemplateColumns = '60px 1fr 400px';
+    } else {
+        // Expand
+        leftPanel.classList.add('expanded');
+        dashboardContainer.style.gridTemplateColumns = '360px 1fr 400px';
+    }
+}
+
+// ===================================
+// CARD EXPAND/COLLAPSE FUNCTIONALITY
+// ===================================
+
+function initializeCardExpanders() {
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('card-expand') || 
+            e.target.closest('.card-expand')) {
+            
+            const button = e.target.classList.contains('card-expand') ? 
+                          e.target : e.target.closest('.card-expand');
+            toggleCardExpansion(button);
+        }
+    });
+}
+
+function toggleCardExpansion(button) {
+    const card = button.closest('.workspace-card');
+    if (!card) return;
+    
+    const isExpanded = card.getAttribute('data-expanded') === 'true';
+    
+    if (isExpanded) {
+        // Collapse
+        card.setAttribute('data-expanded', 'false');
+        button.style.transform = 'rotate(0deg)';
+        
+        // Smooth scroll to top of card if needed
+        const cardRect = card.getBoundingClientRect();
+        if (cardRect.top < 100) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    } else {
+        // Expand
+        card.setAttribute('data-expanded', 'true');
+        button.style.transform = 'rotate(180deg)';
+    }
+}
+
+// Initialize view mode switcher when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeViewModeSwitcher();
+});
+
+// ===================================
+// ENHANCED KEYBOARD SHORTCUTS
+// ===================================
+
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + Shift + V to toggle view mode
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V') {
+        e.preventDefault();
+        const dropdown = document.getElementById('view-mode-dropdown');
+        if (dropdown) {
+            const newMode = currentViewMode === 'pre-visit' ? 'visit' : 'pre-visit';
+            dropdown.value = newMode;
+            switchViewMode(newMode);
+        }
+    }
+    
+    // Ctrl/Cmd + Shift + L to toggle left panel (in visit mode)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'L') {
+        e.preventDefault();
+        if (currentViewMode === 'visit') {
+            toggleLeftPanel();
+        }
+    }
+});
+
+// ===================================
+// RESPONSIVE PANEL ADJUSTMENTS
+// ===================================
+
+function handleResponsiveLayout() {
+    const dashboardContainer = document.querySelector('.dashboard-container');
+    const width = window.innerWidth;
+    
+    if (currentViewMode === 'visit') {
+        if (width < 1400) {
+            dashboardContainer.style.gridTemplateColumns = '60px 1fr 320px';
+        } else if (width < 1600) {
+            dashboardContainer.style.gridTemplateColumns = '60px 1fr 360px';
+        } else {
+            dashboardContainer.style.gridTemplateColumns = '60px 1fr 400px';
+        }
+    }
+}
+
+window.addEventListener('resize', debounce(handleResponsiveLayout, 250));
+
+// Debounce utility function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ===================================
+// ANIMATION PERFORMANCE OPTIMIZATION
+// ===================================
+
+// Use requestAnimationFrame for smooth animations
+function smoothTransition(element, property, startValue, endValue, duration) {
+    const startTime = performance.now();
+    
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function (ease-in-out)
+        const easeProgress = progress < 0.5 
+            ? 2 * progress * progress 
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        
+        const currentValue = startValue + (endValue - startValue) * easeProgress;
+        element.style[property] = currentValue;
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+// ===================================
+// STATE PERSISTENCE
+// ===================================
+
+// Save view mode preference to localStorage
+function saveViewModePreference(mode) {
+    try {
+        localStorage.setItem('medicalDashboardViewMode', mode);
+    } catch (e) {
+        console.warn('Could not save view mode preference:', e);
+    }
+}
+
+// Load view mode preference from localStorage
+function loadViewModePreference() {
+    try {
+        const savedMode = localStorage.getItem('medicalDashboardViewMode');
+        if (savedMode && (savedMode === 'pre-visit' || savedMode === 'visit')) {
+            const dropdown = document.getElementById('view-mode-dropdown');
+            if (dropdown) {
+                dropdown.value = savedMode;
+                if (savedMode !== 'pre-visit') {
+                    switchViewMode(savedMode);
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('Could not load view mode preference:', e);
+    }
+}
+
+// Load preference on page load
+window.addEventListener('load', function() {
+    loadViewModePreference();
+});
+
+// Save preference when mode changes
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.getElementById('view-mode-dropdown');
+    if (dropdown) {
+        dropdown.addEventListener('change', function() {
+            saveViewModePreference(this.value);
+        });
+    }
+});
+
+// ===================================
+// ACCESSIBILITY ENHANCEMENTS
+// ===================================
+
+// Add ARIA labels and announcements for screen readers
+function announceViewModeChange(mode) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.className = 'sr-only';
+    announcement.textContent = `Dashboard view changed to ${mode === 'visit' ? 'Visit' : 'Pre-Visit'} mode`;
+    document.body.appendChild(announcement);
+    
+    setTimeout(() => {
+        announcement.remove();
+    }, 1000);
+}
+
+// Add screen reader only class to styles
+const srOnlyStyle = document.createElement('style');
+srOnlyStyle.textContent = `
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+`;
+document.head.appendChild(srOnlyStyle);
+
+console.log('View mode switching functionality initialized');

@@ -33,6 +33,15 @@
                     Generate
                 </fluent-button>
             </div>
+            
+            <!-- View Mode Selector -->
+            <div class="view-mode-selector">
+                <select id="view-mode-dropdown" class="view-dropdown">
+                    <option value="pre-visit">Pre-Visit</option>
+                    <option value="visit">Visit</option>
+                </select>
+            </div>
+            
             <div class="user-controls">
                 <button id="notifications-btn">
                     🔔
@@ -55,6 +64,16 @@
         
         <!-- LEFT PANEL: Patient Info & Draggable Modules -->
         <aside class="left-panel">
+            <!-- Collapsed Sidebar (initially hidden) -->
+            <div class="collapsed-sidebar">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-arrow">▶</span>
+                </button>
+            </div>
+            
+            <!-- Full Content (shown in Pre-Visit mode) -->
+            <div class="panel-content">
             <!-- Patient Information Card -->
             <div class="patient-card">
                 <div class="patient-header-section">
@@ -160,6 +179,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </aside>
         
         <!-- CENTER PANEL: Workspace -->
@@ -176,10 +196,13 @@
             
             <div id="workspace" class="workspace-grid">
                 <!-- Chief Complaint Analysis -->
-                <div class="workspace-card priority-high">
+                <div class="workspace-card priority-high" data-expanded="false">
                     <div class="card-header">
                         <h3 class="card-title">Chief Complaint Analysis</h3>
-                        <button class="card-action">Details →</button>
+                        <div class="card-actions">
+                            <button class="card-expand" title="Expand/Collapse">⬍</button>
+                            <button class="card-action">Details →</button>
+                        </div>
                     </div>
                     <div class="complaint-tags">
                         <span class="tag tag-critical">Chest Pain</span>
@@ -207,10 +230,13 @@
                 </div>
                 
                 <!-- Vital Signs -->
-                <div class="workspace-card">
+                <div class="workspace-card" data-expanded="false">
                     <div class="card-header">
                         <h3 class="card-title">Current Vital Signs</h3>
-                        <button class="card-action">Trends →</button>
+                        <div class="card-actions">
+                            <button class="card-expand" title="Expand/Collapse">⬍</button>
+                            <button class="card-action">Trends →</button>
+                        </div>
                     </div>
                     <div class="vitals-grid">
                         <div class="vital-item">
@@ -249,10 +275,13 @@
                 </div>
                 
                 <!-- Chronic Conditions -->
-                <div class="workspace-card">
+                <div class="workspace-card" data-expanded="false">
                     <div class="card-header">
                         <h3 class="card-title">Chronic Conditions & Risk Factors</h3>
-                        <button class="card-action">Manage →</button>
+                        <div class="card-actions">
+                            <button class="card-expand" title="Expand/Collapse">⬍</button>
+                            <button class="card-action">Manage →</button>
+                        </div>
                     </div>
                     <div class="conditions-list">
                         <div class="condition-item">
@@ -291,10 +320,13 @@
                 </div>
                 
                 <!-- Clinical Guidelines -->
-                <div class="workspace-card">
+                <div class="workspace-card" data-expanded="false">
                     <div class="card-header">
                         <h3 class="card-title">Relevant Clinical Guidelines</h3>
-                        <button class="card-action">View All →</button>
+                        <div class="card-actions">
+                            <button class="card-expand" title="Expand/Collapse">⬍</button>
+                            <button class="card-action">View All →</button>
+                        </div>
                     </div>
                     <div class="guidelines-container">
                         <div class="guideline-item active">
@@ -322,10 +354,13 @@
                 </div>
                 
                 <!-- Differential Diagnosis -->
-                <div class="workspace-card">
+                <div class="workspace-card" data-expanded="false">
                     <div class="card-header">
                         <h3 class="card-title">Differential Diagnosis</h3>
-                        <button class="card-action">Add Diagnosis →</button>
+                        <div class="card-actions">
+                            <button class="card-expand" title="Expand/Collapse">⬍</button>
+                            <button class="card-action">Add Diagnosis →</button>
+                        </div>
                     </div>
                     <div class="diagnosis-table">
                         <div class="diagnosis-row">
@@ -380,10 +415,13 @@
                 </div>
 
                 <!-- Topics to Address -->
-                <div class="workspace-card">
+                <div class="workspace-card" data-expanded="false">
                     <div class="card-header">
                         <h3 class="card-title">Topics to Address</h3>
-                        <button class="card-action">Add Topic →</button>
+                        <div class="card-actions">
+                            <button class="card-expand" title="Expand/Collapse">⬍</button>
+                            <button class="card-action">Add Topic →</button>
+                        </div>
                     </div>
                     <div class="topics-list">
                         <div class="topic-item">

@@ -84,6 +84,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-l);
 }
 
 .genui-controls {
@@ -154,6 +155,39 @@ fluent-button#generate-btn * {
 fluent-button#generate-btn::part(start),
 fluent-button#generate-btn::part(end) {
     display: none !important;
+}
+
+/* View Mode Selector */
+.view-mode-selector {
+    display: flex;
+    align-items: center;
+}
+
+.view-dropdown {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-medium);
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 32px;
+}
+
+.view-dropdown:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.view-dropdown option {
+    background: var(--surface-primary);
+    color: var(--text-primary);
 }
 
 .user-controls {
@@ -1418,6 +1452,311 @@ fluent-button#generate-btn::part(end) {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-tertiary);
+}
+
+/* ===================================
+   VIEW MODE TRANSITIONS
+   =================================== */
+
+/* Header color transition for Visit mode */
+.dashboard-container.visit-mode ~ .dashboard-header,
+body.visit-mode .dashboard-header {
+    background: linear-gradient(135deg, #11CDEF 0%, #2DCE89 100%) !important;
+    transition: background 0.5s ease;
+}
+
+/* Grid layout changes for Visit mode */
+.dashboard-container {
+    transition: grid-template-columns 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-container.visit-mode {
+    grid-template-columns: 60px 1fr 400px;
+}
+
+/* ===================================
+   LEFT PANEL COLLAPSED STATE
+   =================================== */
+
+.left-panel {
+    position: relative;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Collapsed sidebar (hidden by default) */
+.collapsed-sidebar {
+    display: none;
+    width: 100%;
+    padding: var(--spacing-l) 0;
+}
+
+.dashboard-container.visit-mode .collapsed-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar-toggle {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-medium);
+    background: linear-gradient(135deg, #11CDEF, #2DCE89);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 4px 12px rgba(17, 205, 239, 0.3);
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(17, 205, 239, 0.4);
+}
+
+.sidebar-icon {
+    font-size: 20px;
+}
+
+.sidebar-arrow {
+    font-size: 12px;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.left-panel.expanded .sidebar-arrow {
+    transform: rotate(180deg);
+}
+
+/* Full panel content */
+.panel-content {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.dashboard-container.visit-mode .panel-content {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    width: 0;
+    overflow: hidden;
+}
+
+.dashboard-container.visit-mode .left-panel.expanded {
+    width: 360px;
+}
+
+.dashboard-container.visit-mode .left-panel.expanded .panel-content {
+    opacity: 1;
+    pointer-events: all;
+    position: relative;
+    width: 100%;
+}
+
+.dashboard-container.visit-mode .left-panel.expanded .collapsed-sidebar {
+    display: none;
+}
+
+/* ===================================
+   CENTER/RIGHT PANEL SWAP
+   =================================== */
+
+.center-panel,
+.right-panel {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* In Visit mode, center becomes narrower and shows checklist */
+.dashboard-container.visit-mode .center-panel {
+    order: 2;
+}
+
+.dashboard-container.visit-mode .right-panel {
+    order: 1;
+    border-left: none;
+    border-right: 1px solid var(--border-subtle);
+}
+
+/* ===================================
+   COMPACT WORKSPACE CARDS
+   =================================== */
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+}
+
+.card-expand {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-small);
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.card-expand:hover {
+    background: var(--brand-primary);
+    color: white;
+    border-color: var(--brand-primary);
+    transform: scale(1.1);
+}
+
+/* Show expand button in visit mode */
+.dashboard-container.visit-mode .card-expand {
+    display: flex;
+}
+
+/* Compact card state in Visit mode */
+.dashboard-container.visit-mode .right-panel .workspace-card {
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-container.visit-mode .right-panel .workspace-card[data-expanded="true"] {
+    max-height: 2000px;
+}
+
+.dashboard-container.visit-mode .right-panel .workspace-card[data-expanded="true"] .card-expand {
+    transform: rotate(180deg);
+}
+
+/* Hide less critical info in compact mode */
+.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .metric-grid .metric-item:nth-child(n+3),
+.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .vitals-grid .vital-item:nth-child(n+3),
+.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .conditions-list .condition-item:nth-child(n+3),
+.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .diagnosis-row:nth-child(n+3),
+.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .guideline-item:not(.active),
+.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .topic-item:nth-child(n+4) {
+    display: none;
+}
+
+/* Compact grid layout for right panel in visit mode */
+.dashboard-container.visit-mode .right-panel .workspace-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-m);
+}
+
+/* ===================================
+   CONTENT FADE ANIMATION
+   =================================== */
+
+.dashboard-container.transitioning .center-panel > *,
+.dashboard-container.transitioning .right-panel > * {
+    animation: fadeOut 0.2s ease forwards;
+}
+
+.dashboard-container.transition-complete .center-panel > *,
+.dashboard-container.transition-complete .right-panel > * {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===================================
+   PANEL SLIDING ANIMATIONS
+   =================================== */
+
+@keyframes slideFromLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.dashboard-container.visit-mode .center-panel {
+    animation: slideFromRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-container.visit-mode .right-panel {
+    animation: slideFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   WORKSPACE TITLE CHANGES
+   =================================== */
+
+.dashboard-container.visit-mode .center-panel .workspace-title::after {
+    content: " - Visit Mode";
+    color: var(--brand-accent);
+    font-size: 0.8em;
+}
+
+/* ===================================
+   RESPONSIVE ADJUSTMENTS FOR VIEW MODES
+   =================================== */
+
+@media (max-width: 1600px) {
+    .dashboard-container.visit-mode {
+        grid-template-columns: 60px 1fr 360px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .dashboard-container.visit-mode {
+        grid-template-columns: 60px 1fr 320px;
+    }
+}
+
+/* ===================================
+   SMOOTH TRANSITIONS FOR ALL ELEMENTS
+   =================================== */
+
+.workspace-card,
+.checklist-section,
+.patient-card,
+.module-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   CHECKLIST CENTER POSITIONING
+   =================================== */
+
+.dashboard-container.visit-mode .center-panel {
+    background: var(--surface-primary);
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-header {
+    background: linear-gradient(90deg, rgba(17, 205, 239, 0.05), transparent);
+    padding: var(--spacing-l);
+    margin: calc(-1 * var(--spacing-l));
+    margin-bottom: var(--spacing-l);
+    border-radius: var(--radius-large) var(--radius-large) 0 0;
 }
 
 /* Dark Mode Support */
