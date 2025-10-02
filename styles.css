@@ -1649,6 +1649,203 @@ body.visit-mode .dashboard-header {
 }
 
 /* ===================================
+   COMPACT WORKSPACE STYLING IN VISIT MODE
+   =================================== */
+
+/* Reduce overall padding and spacing */
+.dashboard-container.visit-mode .right-panel .workspace-card {
+    padding: var(--spacing-m);
+    font-size: 12px;
+}
+
+.dashboard-container.visit-mode .right-panel .card-header {
+    margin-bottom: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .card-title {
+    font-size: 13px;
+}
+
+/* Compact complaint tags */
+.dashboard-container.visit-mode .right-panel .complaint-tags {
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .tag {
+    padding: 2px 8px;
+    font-size: 10px;
+}
+
+/* Compact metric grid - show 2 columns */
+.dashboard-container.visit-mode .right-panel .metric-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .metric-item {
+    padding: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .metric-label {
+    font-size: 9px;
+    margin-bottom: 2px;
+}
+
+.dashboard-container.visit-mode .right-panel .metric-value {
+    font-size: 13px;
+}
+
+/* Compact vitals - show 2 per row */
+.dashboard-container.visit-mode .right-panel .vitals-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .vital-item {
+    padding: var(--spacing-s);
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .vital-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+}
+
+.dashboard-container.visit-mode .right-panel .vital-label {
+    font-size: 9px;
+}
+
+.dashboard-container.visit-mode .right-panel .vital-value {
+    font-size: 14px;
+}
+
+.dashboard-container.visit-mode .right-panel .vital-status {
+    font-size: 9px;
+    padding: 1px 4px;
+}
+
+/* Compact conditions list */
+.dashboard-container.visit-mode .right-panel .conditions-list {
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .condition-item {
+    padding: var(--spacing-s);
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .condition-indicator {
+    height: 30px;
+    width: 3px;
+}
+
+.dashboard-container.visit-mode .right-panel .condition-name {
+    font-size: 12px;
+}
+
+.dashboard-container.visit-mode .right-panel .condition-details {
+    font-size: 10px;
+}
+
+.dashboard-container.visit-mode .right-panel .condition-duration {
+    font-size: 10px;
+}
+
+/* Compact diagnosis table */
+.dashboard-container.visit-mode .right-panel .diagnosis-table {
+    gap: var(--spacing-xs);
+}
+
+.dashboard-container.visit-mode .right-panel .diagnosis-row {
+    padding: var(--spacing-s);
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .diagnosis-priority {
+    width: 60px;
+}
+
+.dashboard-container.visit-mode .right-panel .priority-badge {
+    padding: 2px 6px;
+    font-size: 9px;
+}
+
+.dashboard-container.visit-mode .right-panel .diagnosis-name {
+    font-size: 12px;
+}
+
+.dashboard-container.visit-mode .right-panel .diagnosis-probability {
+    width: 60px;
+}
+
+.dashboard-container.visit-mode .right-panel .probability-bar {
+    height: 4px;
+}
+
+.dashboard-container.visit-mode .right-panel .diagnosis-action {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+}
+
+/* Compact guidelines */
+.dashboard-container.visit-mode .right-panel .guidelines-container {
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .guideline-item {
+    padding: var(--spacing-s);
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .guideline-icon {
+    font-size: 16px;
+}
+
+.dashboard-container.visit-mode .right-panel .guideline-title {
+    font-size: 12px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.dashboard-container.visit-mode .right-panel .guideline-points li {
+    font-size: 10px;
+    padding: 1px 0;
+    padding-left: 12px;
+}
+
+/* Compact topics list */
+.dashboard-container.visit-mode .right-panel .topics-list {
+    gap: 2px;
+}
+
+.dashboard-container.visit-mode .right-panel .topic-item {
+    padding: 2px var(--spacing-xs);
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .right-panel .topic-item input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+}
+
+.dashboard-container.visit-mode .right-panel .topic-item label {
+    font-size: 11px;
+}
+
+/* Ensure no horizontal overflow */
+.dashboard-container.visit-mode .right-panel .workspace-card {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.dashboard-container.visit-mode .right-panel .workspace-card * {
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+/* ===================================
    CONTENT FADE ANIMATION
    =================================== */
 
@@ -1744,7 +1941,7 @@ body.visit-mode .dashboard-header {
 }
 
 /* ===================================
-   CHECKLIST CENTER POSITIONING
+   CHECKLIST CENTER POSITIONING & OPTIMIZATION
    =================================== */
 
 .dashboard-container.visit-mode .center-panel {
@@ -1757,6 +1954,40 @@ body.visit-mode .dashboard-header {
     margin: calc(-1 * var(--spacing-l));
     margin-bottom: var(--spacing-l);
     border-radius: var(--radius-large) var(--radius-large) 0 0;
+}
+
+/* Side-by-side layout for checklist sections in Visit mode */
+.dashboard-container.visit-mode .center-panel .checklist-header {
+    margin-bottom: var(--spacing-m);
+}
+
+.dashboard-container.visit-mode .center-panel > .checklist-section:nth-of-type(2),
+.dashboard-container.visit-mode .center-panel > .checklist-section:nth-of-type(3) {
+    width: calc(50% - var(--spacing-s));
+    display: inline-block;
+    vertical-align: top;
+}
+
+.dashboard-container.visit-mode .center-panel > .checklist-section:nth-of-type(2) {
+    margin-right: var(--spacing-m);
+}
+
+/* Compact action buttons in single row for Visit mode */
+.dashboard-container.visit-mode .center-panel .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .center-panel .action-button {
+    flex: 0 1 auto;
+    padding: var(--spacing-s) var(--spacing-m);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.dashboard-container.visit-mode .center-panel .action-button span {
+    margin-right: var(--spacing-xs);
 }
 
 /* Dark Mode Support */
