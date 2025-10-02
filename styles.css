@@ -135,6 +135,27 @@ fluent-button#generate-btn::part(control) {
     border: none !important;
 }
 
+/* Remove any inner content background */
+#generate-btn::part(content),
+fluent-button#generate-btn::part(content) {
+    background: transparent !important;
+}
+
+/* Target the button's internal structure */
+#generate-btn *,
+fluent-button#generate-btn * {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Ensure clean text rendering */
+#generate-btn::part(start),
+#generate-btn::part(end),
+fluent-button#generate-btn::part(start),
+fluent-button#generate-btn::part(end) {
+    display: none !important;
+}
+
 .user-controls {
     display: flex;
     align-items: center;
