@@ -100,29 +100,39 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--radius-medium);
     padding: 10px 16px;
-    color: white;
+    color: var(--text-primary);  /* Changed from white to primary text color */
     backdrop-filter: blur(10px);
 }
 
 #genui-prompt::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);  /* Changed to secondary text color for better visibility */
 }
 
-#generate-btn {
-    background: rgba(255, 255, 255, 0.95);
-    color: var(--brand-primary);
-    border: none;
-    border-radius: var(--radius-medium);
+#generate-btn,
+fluent-button#generate-btn {
+    background: linear-gradient(135deg, #2DCE89, #27AE60) !important;  /* Green gradient indicating primary action */
+    color: white !important;  /* White text on green background */
+    border: none !important;
+    border-radius: var(--radius-medium) !important;
     padding: 10px 20px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(45, 206, 137, 0.25);
 }
 
-#generate-btn:hover {
-    background: white;
+#generate-btn:hover,
+fluent-button#generate-btn:hover {
+    background: linear-gradient(135deg, #27AE60, #229954) !important;  /* Darker green on hover */
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(45, 206, 137, 0.35);
+}
+
+/* Override any Fluent UI button internal styles */
+#generate-btn::part(control),
+fluent-button#generate-btn::part(control) {
+    background: transparent !important;
+    border: none !important;
 }
 
 .user-controls {
