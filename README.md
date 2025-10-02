@@ -166,3 +166,94 @@ Created as a modern implementation of GenUI concepts for medical applications, s
 ---
 
 **Note**: This is a prototype demonstration. Always consult with healthcare professionals for medical decisions. This application uses simulated patient data and should not be used for actual clinical care.
+
+## Deployment Instructions
+
+### Deploying to Azure Static Web Apps
+
+This application is configured for deployment to Azure Static Web Apps. Follow these steps:
+
+#### Prerequisites
+- GitHub account
+- Azure account (free tier works)
+- Azure CLI installed (optional, can use portal)
+
+#### Step 1: Push to GitHub
+```bash
+# Create a new repository on GitHub.com first, then:
+git remote add origin https://github.com/YOUR_USERNAME/medical-dashboard-genui.git
+git push -u origin main
+```
+
+#### Step 2: Create Azure Static Web App
+
+**Option A: Using Azure Portal (Recommended)**
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Click "Create a resource" → Search for "Static Web App"
+3. Fill in:
+   - **Resource Group**: Create new or use existing
+   - **Name**: `medical-dashboard-genui` (or your choice)
+   - **Region**: Choose closest to you
+   - **Plan type**: Free
+   - **Source**: GitHub
+   - **Organization**: Your GitHub username
+   - **Repository**: medical-dashboard-genui
+   - **Branch**: main
+   - **Build Presets**: Custom
+   - **App location**: `/`
+   - **Api location**: Leave empty
+   - **Output location**: Leave empty
+4. Click "Review + create" → "Create"
+
+**Option B: Using Azure CLI**
+```bash
+# Login to Azure
+az login
+
+# Create resource group (if needed)
+az group create --name medical-dashboard-rg --location "Central US"
+
+# Create Static Web App
+az staticwebapp create \
+  --name medical-dashboard-genui \
+  --resource-group medical-dashboard-rg \
+  --source https://github.com/YOUR_USERNAME/medical-dashboard-genui \
+  --branch main \
+  --app-location "/" \
+  --login-with-github
+```
+
+#### Step 3: Access Your Deployed App
+- Your app will be available at: `https://[your-app-name].azurestaticapps.net`
+- Azure automatically rebuilds and redeploys when you push to GitHub
+
+### Configuration Files
+
+- **staticwebapp.config.json**: Contains security headers and routing rules
+- **.gitignore**: Excludes unnecessary files from repository
+
+### Custom Domain (Optional)
+1. In Azure Portal, go to your Static Web App
+2. Click "Custom domains" → "Add"
+3. Follow the DNS configuration instructions
+
+### Authentication (Optional)
+To add authentication:
+1. Modify `staticwebapp.config.json` to include auth rules
+2. Configure identity providers in Azure Portal
+
+### Monitoring
+- View deployment status in GitHub Actions tab
+- Monitor app health in Azure Portal
+- Check application insights for usage analytics
+
+### Troubleshooting
+- If deployment fails, check GitHub Actions logs
+- Verify all files are committed to repository
+- Ensure branch name matches configuration
+- Check Azure Portal for any error messages
+
+### Support
+For issues or questions about deployment, consult:
+- [Azure Static Web Apps Documentation](https://docs.microsoft.com/azure/static-web-apps/)
+- [GitHub Actions Documentation](https://docs.github.com/actions)
