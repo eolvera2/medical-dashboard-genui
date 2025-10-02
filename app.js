@@ -970,6 +970,14 @@ function initializeViewModeSwitcher() {
         });
     }
     
+    // Panel collapse button
+    const panelCollapseBtn = document.getElementById('panel-collapse-btn');
+    if (panelCollapseBtn) {
+        panelCollapseBtn.addEventListener('click', function() {
+            toggleLeftPanel(); // Same function to collapse
+        });
+    }
+    
     // Initialize card expand buttons
     initializeCardExpanders();
 }
@@ -981,42 +989,43 @@ function switchViewMode(newMode) {
     const dashboardContainer = document.querySelector('.dashboard-container');
     const body = document.body;
     
-    // Add transitioning class
-    dashboardContainer.classList.add('transitioning');
-    
-    // Fade out content
-    setTimeout(() => {
-        // Switch modes
-        if (newMode === 'visit') {
-            dashboardContainer.classList.add('visit-mode');
-            body.classList.add('visit-mode');
-            currentViewMode = 'visit';
-        } else {
-            dashboardContainer.classList.remove('visit-mode');
-            body.classList.remove('visit-mode');
-            currentViewMode = 'pre-visit';
-            
-            // Reset left panel expansion if returning to pre-visit
-            const leftPanel = document.querySelector('.left-panel');
-            if (leftPanel) {
-                leftPanel.classList.remove('expanded');
-            }
+    // Switch modes immediately - CSS will handle smooth transitions
+    if (newMode === 'visit') {
+        dashboardContainer.classList.add('visit-mode');
+        body.classList.add('visit-mode');
+        currentViewMode = 'visit';
+        
+        // Set all cards to collapsed state when entering visit mode
+        const workspaceCards = document.querySelectorAll('.workspace-card');
+        workspaceCards.forEach(card => {
+            card.setAttribute('data-expanded', 'false');
+        });
+    } else {
+        dashboardContainer.classList.remove('visit-mode');
+        body.classList.remove('visit-mode');
+        currentViewMode = 'pre-visit';
+        
+        // Reset left panel expansion if returning to pre-visit
+        const leftPanel = document.querySelector('.left-panel');
+        if (leftPanel) {
+            leftPanel.classList.remove('expanded');
         }
         
-        // Remove transitioning, add transition-complete
-        dashboardContainer.classList.remove('transitioning');
-        dashboardContainer.classList.add('transition-complete');
+        // Expand all cards when returning to pre-visit mode
+        const workspaceCards = document.querySelectorAll('.workspace-card');
+        workspaceCards.forEach(card => {
+            card.setAttribute('data-expanded', 'true');
+        });
+    }
+    
+    // Allow transitions to complete
+    setTimeout(() => {
+        isTransitioning = false;
         
-        // Fade in content
-        setTimeout(() => {
-            dashboardContainer.classList.remove('transition-complete');
-            isTransitioning = false;
-            
-            // Show notification
-            const modeName = newMode === 'visit' ? 'Visit Mode' : 'Pre-Visit Mode';
-            showNotification(`Switched to ${modeName}`, 'success');
-        }, 300);
-    }, 200);
+        // Show notification
+        const modeName = newMode === 'visit' ? 'Visit Mode' : 'Pre-Visit Mode';
+        showNotification(`Switched to ${modeName}`, 'success');
+    }, 600); // Match CSS transition duration
 }
 
 function toggleLeftPanel() {

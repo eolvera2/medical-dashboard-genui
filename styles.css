@@ -534,6 +534,7 @@ fluent-button#generate-btn::part(end) {
     background: var(--surface-tertiary);
     padding: var(--spacing-l);
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .workspace-header {
@@ -1251,7 +1252,7 @@ fluent-button#generate-btn::part(end) {
     border: none;
     box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .suggestions-section::before {
@@ -1535,6 +1536,38 @@ body.visit-mode .dashboard-header {
 .panel-content {
     opacity: 1;
     transition: opacity 0.3s ease;
+    position: relative;
+}
+
+/* Panel collapse button - hidden by default */
+.panel-collapse-btn {
+    position: absolute;
+    top: var(--spacing-l);
+    right: var(--spacing-l);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-small);
+    background: linear-gradient(135deg, #11CDEF, #2DCE89);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: none !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(17, 205, 239, 0.3);
+    transition: all 0.3s ease;
+}
+
+.panel-collapse-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(17, 205, 239, 0.4);
+}
+
+/* Show collapse button only when panel is expanded in visit mode */
+.dashboard-container.visit-mode .left-panel.expanded .panel-collapse-btn {
+    display: flex !important;
 }
 
 .dashboard-container.visit-mode .panel-content {
@@ -1617,28 +1650,188 @@ body.visit-mode .dashboard-header {
     display: flex;
 }
 
-/* Compact card state in Visit mode */
-.dashboard-container.visit-mode .right-panel .workspace-card {
-    max-height: 200px;
+/* Compact card state in Visit mode - starts collapsed */
+.dashboard-container.visit-mode .center-panel .workspace-card {
+    max-height: 250px;
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dashboard-container.visit-mode .right-panel .workspace-card[data-expanded="true"] {
+.dashboard-container.visit-mode .center-panel .workspace-card[data-expanded="true"] {
     max-height: 2000px;
 }
 
-.dashboard-container.visit-mode .right-panel .workspace-card[data-expanded="true"] .card-expand {
+.dashboard-container.visit-mode .center-panel .workspace-card[data-expanded="true"] .card-expand {
     transform: rotate(180deg);
 }
 
-/* Hide less critical info in compact mode */
-.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .metric-grid .metric-item:nth-child(n+3),
-.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .vitals-grid .vital-item:nth-child(n+3),
-.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .conditions-list .condition-item:nth-child(n+3),
-.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .diagnosis-row:nth-child(n+3),
-.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .guideline-item:not(.active),
-.dashboard-container.visit-mode .right-panel .workspace-card:not([data-expanded="true"]) .topic-item:nth-child(n+4) {
+/* Ultra-compact vitals display - 2x2 grid with all 4 vitals */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vitals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-item {
+    padding: 6px var(--spacing-s);
+    gap: var(--spacing-s);
+    background: var(--surface-secondary);
+    border-radius: var(--radius-small);
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* Show abbreviated labels in compact mode */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+/* Change label text to abbreviations */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-item:nth-child(1) .vital-label::before {
+    content: "BP";
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-item:nth-child(2) .vital-label::before {
+    content: "HR";
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-item:nth-child(3) .vital-label::before {
+    content: "TEMP";
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-item:nth-child(4) .vital-label::before {
+    content: "O2";
+}
+
+/* Hide original label text but show the ::before content */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-label {
+    font-size: 0;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-label::before {
+    font-size: 10px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-value {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .vital-status {
+    display: none;
+}
+
+/* Compact conditions - 2x2 grid */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .conditions-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .condition-item {
+    padding: 6px;
+    gap: 6px;
+    background: var(--surface-secondary);
+    border-radius: var(--radius-small);
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .condition-indicator {
+    width: 3px;
+    height: 100%;
+    min-height: 24px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .condition-name {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .condition-details {
+    display: none;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .condition-duration {
+    font-size: 9px;
+}
+
+/* Compact diagnosis - minimal rows */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .diagnosis-row {
+    padding: 4px var(--spacing-s);
+    gap: var(--spacing-s);
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .diagnosis-priority {
+    width: 50px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .priority-badge {
+    padding: 2px 4px;
+    font-size: 8px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .diagnosis-name {
+    font-size: 11px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .diagnosis-probability {
+    display: none;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .diagnosis-action {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+}
+
+/* Compact metrics - show all 4 in 2x2 grid */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .metric-item {
+    padding: 6px;
+    background: var(--surface-secondary);
+    border-radius: var(--radius-small);
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .metric-label {
+    font-size: 9px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .metric-value {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Compact complaint tags */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .complaint-tags {
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .tag {
+    padding: 2px 6px;
+    font-size: 9px;
+}
+
+/* Hide less critical info in compact mode - but keep all 4 vitals, all 4 metrics, all 4 diagnoses, and all 4 conditions visible */
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .guideline-item:not(.active),
+.dashboard-container.visit-mode .center-panel .workspace-card:not([data-expanded="true"]) .topic-item:nth-child(n+4) {
     display: none;
 }
 
@@ -1845,29 +2038,6 @@ body.visit-mode .dashboard-header {
     word-wrap: break-word;
 }
 
-/* ===================================
-   CONTENT FADE ANIMATION
-   =================================== */
-
-.dashboard-container.transitioning .center-panel > *,
-.dashboard-container.transitioning .right-panel > * {
-    animation: fadeOut 0.2s ease forwards;
-}
-
-.dashboard-container.transition-complete .center-panel > *,
-.dashboard-container.transition-complete .right-panel > * {
-    animation: fadeIn 0.3s ease forwards;
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
 
 /* ===================================
    PANEL SLIDING ANIMATIONS
@@ -1957,36 +2127,67 @@ body.visit-mode .dashboard-header {
 }
 
 /* Side-by-side layout for checklist sections in Visit mode */
-.dashboard-container.visit-mode .center-panel .checklist-header {
+.dashboard-container.visit-mode .right-panel .checklist-header {
     margin-bottom: var(--spacing-m);
 }
 
-.dashboard-container.visit-mode .center-panel > .checklist-section:nth-of-type(2),
-.dashboard-container.visit-mode .center-panel > .checklist-section:nth-of-type(3) {
-    width: calc(50% - var(--spacing-s));
-    display: inline-block;
-    vertical-align: top;
+/* Use CSS Grid to create side-by-side layout */
+.dashboard-container.visit-mode .right-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-l);
+    grid-auto-flow: dense;
 }
 
-.dashboard-container.visit-mode .center-panel > .checklist-section:nth-of-type(2) {
-    margin-right: var(--spacing-m);
+/* Header takes full width in row 1 */
+.dashboard-container.visit-mode .right-panel .checklist-header {
+    grid-column: 1 / -1;
+}
+
+/* Sections 2 and 3 share row 2, taking half width each */
+.dashboard-container.visit-mode .right-panel .checklist-section:nth-child(2) {
+    grid-column: 1 / 2;
+    grid-row: 2;
+}
+
+.dashboard-container.visit-mode .right-panel .checklist-section:nth-child(3) {
+    grid-column: 2 / 3;
+    grid-row: 2;
+}
+
+/* Apply 2-column grid only when we have sections 2 and 3 */
+.dashboard-container.visit-mode .right-panel:has(.checklist-section:nth-child(3)) {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--spacing-m);
+}
+
+/* Section 4 and beyond take full width */
+.dashboard-container.visit-mode .right-panel .checklist-section:nth-child(n+4) {
+    grid-column: 1 / -1;
+}
+
+/* Suggestions section also takes full width */
+.dashboard-container.visit-mode .right-panel .suggestions-section {
+    grid-column: 1 / -1;
 }
 
 /* Compact action buttons in single row for Visit mode */
-.dashboard-container.visit-mode .center-panel .action-buttons {
+.dashboard-container.visit-mode .right-panel .action-buttons {
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--spacing-s);
+    justify-content: flex-start;
 }
 
-.dashboard-container.visit-mode .center-panel .action-button {
+.dashboard-container.visit-mode .right-panel .action-button {
     flex: 0 1 auto;
+    width: auto;
     padding: var(--spacing-s) var(--spacing-m);
     font-size: 13px;
     white-space: nowrap;
 }
 
-.dashboard-container.visit-mode .center-panel .action-button span {
+.dashboard-container.visit-mode .right-panel .action-button span {
     margin-right: var(--spacing-xs);
 }
 
